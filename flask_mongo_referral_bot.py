@@ -808,6 +808,7 @@ def health():
     return jsonify({"ok": True, "bot": "running", "webhook": webhook_configured})
 
 
+@app.post("/")
 @app.post("/webhook")
 @app.post(f"/webhook/{WEBHOOK_SECRET}")
 def webhook():
