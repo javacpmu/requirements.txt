@@ -827,7 +827,7 @@ def main() -> None:
     if WEBHOOK_URL:
         ensure_telegram_started()
         configure_webhook_once(WEBHOOK_URL)
-        flask_app.run(host="0.0.0.0", port=PORT)
+        app.run(host="0.0.0.0", port=PORT)
     else:
         print("Bot polling rejimida ishga tushdi.", file=sys.stderr)
         telegram_app.run_polling(allowed_updates=Update.ALL_TYPES)
