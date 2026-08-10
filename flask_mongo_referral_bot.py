@@ -293,7 +293,7 @@ def lang_keyboard() -> InlineKeyboardMarkup:
     styles = {"uz": "success", "ru": "primary", "en": "danger"}
     labels = {"uz": LANG_NAMES["uz"], "ru": LANG_NAMES["ru"], "en": LANG_NAMES["en"]}
     return InlineKeyboardMarkup([
-        [ib(labels[code], styles[code], f"lang_{code}", callback_data=f"setlang_{code}") for code in LANGS]
+        [ib(labels[code], styles[code], f"lang_{code}", callback_data=f"lang:{code}") for code in LANGS]
     ])
 
 
@@ -369,6 +369,31 @@ def user_title(user: dict[str, Any] | None) -> str:
         return "@" + user["username"]
     name = " ".join(part for part in [user.get("first_name"), user.get("last_name")] if part).strip()
     return name or str(user.get("_id"))
+
+
+def all_admin_ids() -> list[int]:
+    ids = {OWNER_ID, *ADMIN_IDS}
+    ids.update(doc["_id"] for doc in admins.find({}, {"_id": 1}) if isinstance(doc.get("_id"), int))
+    return sorted(ids)
+
+
+async def notify_admins_withdraw(context: ContextTypes.DEFAULT_TYPE, tg_user, reward: str, price: int) -> None:
+    username = f"@{tg_user.username}" if tg_user.username else "yo'q"
+    text = (
+        "Yangi coin yechish so'rovi\n\n"
+        f"Foydalanuvchi {price} coin yechdi.\n"
+        f"Mukofot: {reward}\n"
+        f"ID: {tg_user.id}\n"
+        f"Username: {username}"
+    )
+    markup = InlineKeyboardMarkup([
+        [ib("Foydalanuvchi", "primary", "account", url=f"tg://user?id={tg_user.id}")]
+    ])
+    for admin_id in all_admin_ids():
+        try:
+            await context.bot.send_message(admin_id, text, reply_markup=markup)
+        except TelegramError:
+            pass
 
 
 def positive_int(text: str) -> int | None:
@@ -475,7 +500,7 @@ async def language_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def language_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     await query.answer()
-    code = query.data.split(":", 1)[1]
+    code = query.data.split(":", 1)[1] if ":" in query.data else query.data.replace("setlang_", "", 1)
     code = code if code in LANGS else "uz"
     users.update_one({"_id": query.from_user.id}, {"$set": {"lang": code, "state": None}}, upsert=True)
     await query.message.reply_text(t(code, "lang_saved"), reply_markup=main_menu(code, is_admin(query.from_user.id)))
@@ -531,6 +556,7 @@ async def withdraw_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         return
     users.update_one({"_id": query.from_user.id}, {"$inc": {"coins": -price, "withdrawn_coins": price}})
     withdrawals.insert_one({"user_id": query.from_user.id, "reward": label, "price": price, "status": "new", "created_at": now()})
+    await notify_admins_withdraw(context, query.from_user, label, price)
     await query.message.reply_text(t(lang, "withdraw_ok"), reply_markup=main_menu(lang, is_admin(query.from_user.id)))
 
 
@@ -812,7 +838,7 @@ async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 def register_handlers() -> None:
     telegram_app.add_handler(CommandHandler("start", start))
     telegram_app.add_handler(CommandHandler("language", language_cmd))
-    telegram_app.add_handler(CallbackQueryHandler(language_callback, pattern=r"^lang:"))
+    telegram_app.add_handler(CallbackQueryHandler(language_callback, pattern=r"^(lang:|setlang_)"))
     telegram_app.add_handler(CallbackQueryHandler(check_sub_callback, pattern=r"^check_sub$"))
     telegram_app.add_handler(CallbackQueryHandler(top_callback, pattern=r"^top:"))
     telegram_app.add_handler(CallbackQueryHandler(withdraw_callback, pattern=r"^withdraw:"))
