@@ -808,19 +808,39 @@ def health():
     return jsonify({"ok": True, "bot": "running", "webhook": webhook_configured})
 
 
+import asyncio
+
 @app.post("/")
 @app.post("/webhook")
 @app.post(f"/webhook/{WEBHOOK_SECRET}")
 def webhook():
-    ensure_telegram_started()
-    data = request.get_json(force=True, silent=True) or {}
+    if not telegram_app:
+        return jsonify({"ok": False, "error": "Bot not initialized"}), 500
+        
+    data = request.get_json(force=True, silent=True)
+    if not data:
+        return jsonify({"ok": True})
+
+    # Telegram Update obyektiga aylantirib, to'g'ridan-to'g'ri app ga uzatamiz
     try:
-        import asyncio
-        loop = asyncio.get_event_loop()
-        loop.create_task(process_update_json(data))
+        from telegram import Update
+        update = Update.de_json(data, telegram_app.bot)
+        
+        # Asinxron tarzda navbatga qo'shamiz
+        async def process():
+            await telegram_app.update_queue.put(update)
+            
+        # Gunicorn ichida event loop'ni topib ishlatish:
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+        loop.create_task(process())
     except Exception as exc:
-        print(f"Webhook process error: {exc}", file=sys.stderr)
-        traceback.print_exc(file=sys.stderr)
+        print(f"Webhook update error: {exc}", file=sys.stderr)
+        
     return jsonify({"ok": True}), 200
 
 
