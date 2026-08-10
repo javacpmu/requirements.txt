@@ -818,10 +818,10 @@ def webhook():
         run_coroutine(process_update_json(data), timeout=25)
     except FutureTimeoutError:
         return jsonify({"ok": False, "error": "timeout"}), 504
-    except Exception as exc:
+   except Exception as exc:
         print(f"Webhook process error: {exc}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)  # <-- AYNAN SHU QATORNI QO'SHING
         return jsonify({"ok": False}), 500
-    return jsonify({"ok": True})
 
 
 def main() -> None:
