@@ -292,7 +292,9 @@ def main_menu(lang: str, admin: bool = False) -> ReplyKeyboardMarkup:
 def lang_keyboard() -> InlineKeyboardMarkup:
     styles = {"uz": "success", "ru": "primary", "en": "danger"}
     labels = {"uz": LANG_NAMES["uz"], "ru": LANG_NAMES["ru"], "en": LANG_NAMES["en"]}
-    return InlineKeyboardMarkup([[ib(labels[code], styles[code], f"lang_{code}", callback_data=f"lang:{code}")] for code in LANGS])
+    return InlineKeyboardMarkup([
+        [ib(labels[code], styles[code], f"lang_{code}", callback_data=f"setlang_{code}") for code in LANGS]
+    ])
 
 
 def admin_keyboard(lang: str) -> InlineKeyboardMarkup:
