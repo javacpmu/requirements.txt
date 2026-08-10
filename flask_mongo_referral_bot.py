@@ -796,7 +796,7 @@ async def process_update_json(data: dict[str, Any]) -> None:
     await telegram_app.process_update(update)
 
 
-@flask_app.get("/")
+@app.get("/")
 def health():
     host = request.headers.get("X-Forwarded-Host") or request.host
     scheme = request.headers.get("X-Forwarded-Proto") or "https"
@@ -808,8 +808,8 @@ def health():
     return jsonify({"ok": True, "bot": "running", "webhook": webhook_configured})
 
 
-@flask_app.post("/webhook")
-@flask_app.post(f"/webhook/{WEBHOOK_SECRET}")
+@app.post("/webhook")
+@app.post(f"/webhook/{WEBHOOK_SECRET}")
 def webhook():
     ensure_telegram_started()
     data = request.get_json(force=True, silent=True) or {}
