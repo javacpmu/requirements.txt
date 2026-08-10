@@ -6,7 +6,6 @@ import threading
 from concurrent.futures import TimeoutError as FutureTimeoutError
 from datetime import datetime, timedelta, timezone
 from typing import Any
-from xxlimited import Str
 
 from flask import Flask, jsonify, request
 from pymongo import ASCENDING, DESCENDING, MongoClient, ReturnDocument
