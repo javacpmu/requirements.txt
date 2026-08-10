@@ -65,7 +65,7 @@ load_env_file()
 BOT_TOKEN = first_valid_env("BOT_TOKEN", "8831278254:AAHdL4in2whlp76ZOGkw0tNimW5XeCQQOyc", "TOKEN")
 OWNER_ID = int(clean_env("OWNER_ID", "6968399046") or "6968399046")
 ADMIN_IDS_TEXT = clean_env("ADMIN_IDS", str(OWNER_ID))
-MONGO_URI = os.getenv("MONGO_URI") or os.getenv("mongodb+srv://tojiyevjavohir67_db_user:<qeJ3nSLEMc1LH1jf>@cluster0.pysrg0q.mongodb.net/?appName=Cluster0
+MONGO_URI = os.getenv("MONGO_URI") or os.getenv("mongodb+srv://tojiyevjavohir67_db_user:<qeJ3nSLEMc1LH1jf>@cluster0.pysrg0q.mongodb.net/?appName=Cluster0")
 ")
 MONGO_DB = first_valid_env("MONGODB_DB", "MONGO_DB", default="referral_coin_bot")
 WEBHOOK_URL = render_base_url()
