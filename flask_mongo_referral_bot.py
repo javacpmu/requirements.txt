@@ -815,14 +815,13 @@ def webhook():
     ensure_telegram_started()
     data = request.get_json(force=True, silent=True) or {}
     try:
-        run_coroutine(process_update_json(data), timeout=25)
-    except FutureTimeoutError:
-        return jsonify({"ok": False, "error": "timeout"}), 504
+        import asyncio
+        loop = asyncio.get_event_loop()
+        loop.create_task(process_update_json(data))
     except Exception as exc:
         print(f"Webhook process error: {exc}", file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
-        return jsonify({"ok": False}), 500
-    return jsonify({"ok": True})
+    return jsonify({"ok": True}), 200
 
 
 def main() -> None:
