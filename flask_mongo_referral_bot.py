@@ -78,7 +78,11 @@ if not BOT_TOKEN:
 if not MONGO_URI:
     raise RuntimeError("MONGODB_URI kiritilmagan. Render Environment Variables joyida KEY=MONGODB_URI qilib kiriting.")
 
+MONGO_URI = os.getenv("MONGO_URI") or os.getenv("MONGODB_URI")
+MONGO_DB = os.getenv("MONGO_DB") or "referral_bot"
+
 mongo = MongoClient(MONGO_URI)
+db = mongo[MONGO_DB]
 db = mongo[MONGO_DB]
 users = db.users
 referrals = db.referrals
