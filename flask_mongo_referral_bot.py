@@ -895,21 +895,37 @@ def health():
             print(f"Webhook setup error: {exc}", file=sys.stderr)
     return jsonify({"ok": True, "bot": "running", "webhook": webhook_configured})
 
-
+@flask_app.post("/")
 @flask_app.post("/webhook")
 @flask_app.post(f"/webhook/{WEBHOOK_SECRET}")
 def webhook():
-    ensure_telegram_started()
-    data = request.get_json(force=True, silent=True) or {}
-    try:
-        run_coroutine(process_update_json(data), timeout=25)
-    except FutureTimeoutError:
-        return jsonify({"ok": False, "error": "timeout"}), 504
-    except Exception as exc:
-        print(f"Webhook process error: {exc}", file=sys.stderr)
-        return jsonify({"ok": False}), 500
-    return jsonify({"ok": True})
+    data = request.get_json(force=True, silent=True)
+    if data:
+        try:
+            import asyncio
+            def _run_async(coro):
+                try:
+                    loop = asyncio.get_event_loop()
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                if loop.is_running():
+                    return asyncio.run_coroutine_threadsafe(coro, loop)
+                else:
+                    return loop.run_until_complete(coro)
 
+            async def _process_update_async(update_data):
+                if not telegram_app._initialized:
+                    await telegram_app.initialize()
+                if not telegram_app._running:
+                    await telegram_app.start()
+                update = Update.de_json(update_data, telegram_app.bot)
+                await telegram_app.process_update(update)
+
+            _run_async(_process_update_async(data))
+        except Exception as exc:
+            print(f"Webhook process error: {exc}", file=sys.stderr)
+    return jsonify({"ok": True}), 200
 
 def main() -> None:
     if WEBHOOK_URL:
