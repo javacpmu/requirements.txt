@@ -115,7 +115,7 @@ TR = {
         "add_req": "Majburiy obuna qo'shish", "remove_req": "Majburiy obunani o'chirish", "list_req": "Obunalar ro'yxati", "broadcast": "Hammaga xabar", "add_admin": "Admin qo'shish", "remove_admin": "Admin o'chirish", "add_coin": "Coin tashlash", "add_promo": "Promo kod qo'shish", "list_promo": "Promo kodlar",
         "cancel": "Bekor qilish", "cancelled": "Bekor qilindi.", "send_user": "Foydalanuvchi ID yoki @username yuboring:", "send_amount": "Coin miqdorini yuboring:", "coin_sent": "{user} foydalanuvchiga {coins} coin yuborildi.", "coin_received": "Admin hisobingizga {coins} coin qo'shdi.",
         "promo_code_step": "Promo kod nomini yuboring. Masalan: BONUS100", "promo_coins_step": "Bu promo kod nechta coin bersin?", "promo_hours_step": "Promo kod muddati necha soat bo'lsin? 0 yuborsangiz muddatsiz bo'ladi.", "promo_limit_step": "Nechta odam ishlata olsin?", "promo_created": "Promo kod yaratildi: {code}\nCoin: {coins}\nMuddat: {expires}\nLimit: {limit}",
-        "not_found": "Topilmadi.", "bad_number": "Musbat son yuboring.", "send_broadcast": "Hammaga yuboriladigan xabarni yuboring:", "broadcast_done": "Xabar yuborildi. Yetdi: {sent}, xato: {failed}", "req_type": "Majburiy obuna turini tanlang:", "req_title": "Nomini yuboring:", "req_target": "Kanal/chat username yoki ID yuboring. Instagram/bot uchun link yuboring:", "req_added": "Majburiy obuna qo'shildi.", "empty": "Bo'sh.", "ok": "OK", "top_title": "Top referallar", "top_empty": "Hozircha referal yo'q.", "top_7": "1 haftalik top", "top_20": "20 kunlik top", "top_365": "1 yillik top"
+        "not_found": "Topilmadi.", "bad_number": "Musbat son yuboring.", "send_broadcast": "Hammaga yuboriladigan xabarni yuboring:", "broadcast_done": "Xabar yuborildi. Yetdi: {sent}, xato: {failed}", "req_type": "Majburiy obuna turini tanlang:", "req_title": "Nomini yuboring:", "req_target": "Kanal/chat username yoki ID yuboring. Instagram/bot uchun link yuboring:", "req_added": "Majburiy obuna qo'shildi.", "empty": "Bo'sh.", "ok": "OK", "top_title": "Top referallar", "top_empty": "Hozircha referal yo'q.", "top_7": "1 haftalik top", "top_20": "20 kunlik top", "top_365": "1 yillik top", "withdraw_king": "King ochish", "withdraw_hp300": "300 HP ochish", "withdraw_game_money": "O'yin puli", "withdraw_coin30000": "30.000 coin", "withdraw_chrome": "Xrom ochish", "withdraw_sirena": "Sirena ochish", "withdraw_w16": "W16 Mator ochish", "withdraw_dom3": "DOM3 ochish"
     },
     "ru": {
         "choose_lang": "Выберите язык:", "lang_saved": "Язык сохранен.", "welcome": "Здравствуйте! Выберите раздел.",
@@ -129,7 +129,7 @@ TR = {
         "add_req": "Добавить подписку", "remove_req": "Удалить подписку", "list_req": "Список подписок", "broadcast": "Рассылка", "add_admin": "Добавить админа", "remove_admin": "Удалить админа", "add_coin": "Отправить монеты", "add_promo": "Добавить промокод", "list_promo": "Промокоды",
         "cancel": "Отмена", "cancelled": "Отменено.", "send_user": "Отправьте ID пользователя или @username:", "send_amount": "Отправьте количество монет:", "coin_sent": "Пользователю {user} отправлено {coins} монет.", "coin_received": "Админ добавил вам {coins} монет.",
         "promo_code_step": "Отправьте код. Например: BONUS100", "promo_coins_step": "Сколько монет дает промокод?", "promo_hours_step": "Срок промокода в часах? 0 - без срока.", "promo_limit_step": "Сколько людей могут использовать?", "promo_created": "Промокод создан: {code}\nМонеты: {coins}\nСрок: {expires}\nЛимит: {limit}",
-        "not_found": "Не найдено.", "bad_number": "Отправьте положительное число.", "send_broadcast": "Отправьте сообщение для рассылки:", "broadcast_done": "Рассылка готова. Успешно: {sent}, ошибок: {failed}", "req_type": "Выберите тип подписки:", "req_title": "Отправьте название:", "req_target": "Отправьте username/ID канала или ссылку для Instagram/бота:", "req_added": "Подписка добавлена.", "empty": "Пусто.", "ok": "OK", "top_title": "Топ рефералов", "top_empty": "Пока нет рефералов.", "top_7": "Топ за неделю", "top_20": "Топ за 20 дней", "top_365": "Топ за год"
+        "not_found": "Не найдено.", "bad_number": "Отправьте положительное число.", "send_broadcast": "Отправьте сообщение для рассылки:", "broadcast_done": "Рассылка готова. Успешно: {sent}, ошибок: {failed}", "req_type": "Выберите тип подписки:", "req_title": "Отправьте название:", "req_target": "Отправьте username/ID канала или ссылку для Instagram/бота:", "req_added": "Подписка добавлена.", "empty": "Пусто.", "ok": "OK", "top_title": "Топ рефералов", "top_empty": "Пока нет рефералов.", "top_7": "Топ за неделю", "top_20": "Топ за 20 дней", "top_365": "Топ за год", "withdraw_king": "Открыть King", "withdraw_hp300": "Открыть 300 HP", "withdraw_game_money": "Игровые деньги", "withdraw_coin30000": "30.000 монет", "withdraw_chrome": "Открыть Xrom", "withdraw_sirena": "Открыть сирену", "withdraw_w16": "Открыть мотор W16", "withdraw_dom3": "Открыть DOM3"
     },
     "en": {
         "choose_lang": "Choose language:", "lang_saved": "Language saved.", "welcome": "Hello! Choose a section.",
@@ -143,10 +143,19 @@ TR = {
         "add_req": "Add required subscription", "remove_req": "Remove required subscription", "list_req": "Subscription list", "broadcast": "Broadcast", "add_admin": "Add admin", "remove_admin": "Remove admin", "add_coin": "Send coins", "add_promo": "Add promo code", "list_promo": "Promo codes",
         "cancel": "Cancel", "cancelled": "Cancelled.", "send_user": "Send user ID or @username:", "send_amount": "Send coin amount:", "coin_sent": "Sent {coins} coins to {user}.", "coin_received": "Admin added {coins} coins to your account.",
         "promo_code_step": "Send promo code. Example: BONUS100", "promo_coins_step": "How many coins should it give?", "promo_hours_step": "How many hours should it work? Send 0 for no expiry.", "promo_limit_step": "How many people can use it?", "promo_created": "Promo code created: {code}\nCoins: {coins}\nExpires: {expires}\nLimit: {limit}",
-        "not_found": "Not found.", "bad_number": "Send a positive number.", "send_broadcast": "Send broadcast message:", "broadcast_done": "Broadcast done. Sent: {sent}, failed: {failed}", "req_type": "Choose subscription type:", "req_title": "Send title:", "req_target": "Send channel/chat username or ID. For Instagram/bot send link:", "req_added": "Required subscription added.", "empty": "Empty.", "ok": "OK", "top_title": "Top referrals", "top_empty": "No referrals yet.", "top_7": "Weekly top", "top_20": "20-day top", "top_365": "Yearly top"
+        "not_found": "Not found.", "bad_number": "Send a positive number.", "send_broadcast": "Send broadcast message:", "broadcast_done": "Broadcast done. Sent: {sent}, failed: {failed}", "req_type": "Choose subscription type:", "req_title": "Send title:", "req_target": "Send channel/chat username or ID. For Instagram/bot send link:", "req_added": "Required subscription added.", "empty": "Empty.", "ok": "OK", "top_title": "Top referrals", "top_empty": "No referrals yet.", "top_7": "Weekly top", "top_20": "20-day top", "top_365": "Yearly top", "withdraw_king": "Open King", "withdraw_hp300": "Open 300 HP", "withdraw_game_money": "Game money", "withdraw_coin30000": "30,000 coins", "withdraw_chrome": "Open Xrom", "withdraw_sirena": "Open Siren", "withdraw_w16": "Open W16 Engine", "withdraw_dom3": "Open DOM3"
     },
 }
-WITHDRAW_ITEMS = [("king", "King", 5000), ("hp300", "300 HP", 4000), ("game_money", "O'yin puli", 6000), ("coin30000", "30.000 coin", 10000), ("chrome", "Xrom", 10000)]
+WITHDRAW_ITEMS = [
+    ("king", "King ochish", 5000),
+    ("hp300", "300 HP ochish", 4000),
+    ("game_money", "O'yin puli", 6000),
+    ("coin30000", "30.000 coin", 10000),
+    ("chrome", "Xrom ochish", 10000),
+    ("sirena", "Sirena ochish", 6000),
+    ("w16", "W16 Mator ochish", 6000),
+    ("dom3", "DOM3 ochish", 5000),
+]
 REQ_TYPES = [("channel", "Telegram kanal"), ("chat", "Telegram chat"), ("request", "Zayafka kanal"), ("instagram", "Instagram"), ("bot", "Telegram bot")]
 
 
@@ -223,8 +232,16 @@ PREMIUM_EMOJI_IDS = {
     "subscription_link": "5440676438120369351",# Majburiy obuna: kanal/link tugmasi
     "check_sub": "5438271346628922184",      # Majburiy obuna: Obunani tekshirish
     "withdraw_item": "5440831018288322678",  # Coin yechishdagi mukofot tugmalari
-    "req_type": "",       # Majburiy obuna turini tanlash
-    "req_delete": "",     # Majburiy obunani ro'yxatdan o'chirish
+    "withdraw_king": "5438356288197133913",       # Coin yechish: King ochish
+    "withdraw_hp300": "5461054558996282111",      # Coin yechish: 300 HP ochish
+    "withdraw_game_money": "5440729150253994759", # Coin yechish: O'yin puli
+    "withdraw_coin30000": "5379600444098093058",  # Coin yechish: 30.000 coin
+    "withdraw_chrome": "5256106411917592822",     # Coin yechish: Xrom ochish
+    "withdraw_sirena": "5395695537687123235",     # Coin yechish: Sirena ochish
+    "withdraw_w16": "5852967837970206643",        # Coin yechish: W16 Mator ochish
+    "withdraw_dom3": "5465226866321268133",       # Coin yechish: DOM3 ochish
+    "req_type": "5332301305002086070",       # Majburiy obuna turini tanlash
+    "req_delete": "5852967837970206643",     # Majburiy obunani ro'yxatdan o'chirish
     "empty": "",          # Bo'sh ro'yxat tugmasi
     "top_7": "5460991276948143687",          # Top referallar: 1 haftalik
     "top_20": "5460991276948143687",         # Top referallar: 20 kunlik
@@ -320,8 +337,26 @@ def subscription_keyboard(lang: str, missing: list[dict[str, Any]]) -> InlineKey
     return InlineKeyboardMarkup(rows)
 
 
-def withdraw_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[ib(f"{label} - {price} coin", "primary", "withdraw_item", callback_data=f"withdraw:{code}")] for code, label, price in WITHDRAW_ITEMS])
+def withdraw_emoji_key(code: str) -> str:
+    key = f"withdraw_{code}"
+    return key if premium_icon(key) else "withdraw_item"
+
+
+def withdraw_label(lang: str, code: str, fallback: str) -> str:
+    key = f"withdraw_{code}"
+    value = t(lang, key)
+    return fallback if value == key else value
+
+
+def coin_unit(lang: str) -> str:
+    return {"uz": "coin", "ru": "монет", "en": "coins"}.get(lang, "coin")
+
+
+def withdraw_keyboard(lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [ib(f"{withdraw_label(lang, code, label)} - {price} {coin_unit(lang)}", "primary", withdraw_emoji_key(code), callback_data=f"withdraw:{code}")]
+        for code, label, price in WITHDRAW_ITEMS
+    ])
 
 
 def req_type_keyboard() -> InlineKeyboardMarkup:
@@ -538,7 +573,8 @@ async def show_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def withdraw_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if await require_subscription(update, context):
-        await update.message.reply_text(t(get_lang(update.effective_user.id), "withdraw_text"), reply_markup=withdraw_keyboard())
+        lang = get_lang(update.effective_user.id)
+        await update.message.reply_text(t(lang, "withdraw_text"), reply_markup=withdraw_keyboard(lang))
 
 
 async def withdraw_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -549,7 +585,8 @@ async def withdraw_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     item = next((x for x in WITHDRAW_ITEMS if x[0] == code), None)
     if not item:
         return
-    _, label, price = item
+    _, fallback_label, price = item
+    label = withdraw_label(lang, code, fallback_label)
     user = users.find_one({"_id": query.from_user.id}) or {"coins": 0}
     if user.get("coins", 0) < price:
         await query.message.reply_text(t(lang, "not_enough", price=price, coins=user.get("coins", 0)))
