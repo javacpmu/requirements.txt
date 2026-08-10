@@ -94,7 +94,7 @@ promo_redemptions = db.promo_redemptions
 coin_transfers = db.coin_transfers
 broadcasts = db.broadcasts
 
-flask_app = Flask(__name__)
+app = Flask(__name__)
 telegram_app = Application.builder().token(BOT_TOKEN).build()
 telegram_loop = asyncio.new_event_loop()
 telegram_started = False
