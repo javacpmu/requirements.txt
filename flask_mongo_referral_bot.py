@@ -10,7 +10,7 @@ from typing import Any
 from flask import Flask, jsonify, request
 from pymongo import ASCENDING, DESCENDING, MongoClient, ReturnDocument
 from pymongo.errors import DuplicateKeyError, PyMongoError
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, MessageEntity, ReplyKeyboardMarkup, Update
 from telegram.error import BadRequest, Forbidden, TelegramError
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
 
@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UTC = timezone.utc
 
 
-def load_env_file(filename: Str = ".env") -> None:
+def load_env_file(filename: str = ".env") -> None:
     path = os.path.join(BASE_DIR, filename)
     if not os.path.exists(path):
         return
@@ -65,7 +65,8 @@ load_env_file()
 BOT_TOKEN = first_valid_env("BOT_TOKEN", "8831278254:AAHdL4in2whlp76ZOGkw0tNimW5XeCQQOyc", "TOKEN")
 OWNER_ID = int(clean_env("OWNER_ID", "6968399046") or "6968399046")
 ADMIN_IDS_TEXT = clean_env("ADMIN_IDS", str(OWNER_ID))
-MONGO_URI = os.getenv("MONGO_URI") or os.getenv("MONGODB_URI")
+MONGO_URI = first_valid_env("MONGODB_URI", "MONGO_URI", default="mongodb+srv://tojiyevjavohir67_db_user:javohir2011@cluster0.pysrg0q.mongodb.net/?appName=Cluster0")
+MONGO_DB = first_valid_env("MONGODB_DB", "MONGO_DB", default="referral_coin_bot")
 WEBHOOK_URL = render_base_url()
 WEBHOOK_SECRET = clean_env("WEBHOOK_SECRET", "referral-secret") or "referral-secret"
 PORT = int(clean_env("PORT", "5000") or "5000")
@@ -78,11 +79,7 @@ if not BOT_TOKEN:
 if not MONGO_URI:
     raise RuntimeError("MONGODB_URI kiritilmagan. Render Environment Variables joyida KEY=MONGODB_URI qilib kiriting.")
 
-MONGO_URI = os.getenv("MONGO_URI") or os.getenv("MONGODB_URI")
-MONGO_DB = os.getenv("MONGO_DB") or "referral_bot"
-
 mongo = MongoClient(MONGO_URI)
-db = mongo[MONGO_DB]
 db = mongo[MONGO_DB]
 users = db.users
 referrals = db.referrals
@@ -94,7 +91,7 @@ promo_redemptions = db.promo_redemptions
 coin_transfers = db.coin_transfers
 broadcasts = db.broadcasts
 
-app = Flask(__name__)
+flask_app = Flask(__name__)
 telegram_app = Application.builder().token(BOT_TOKEN).build()
 telegram_loop = asyncio.new_event_loop()
 telegram_started = False
@@ -108,7 +105,7 @@ LANG_NAMES = {"uz": "O'zbek", "ru": "Русский", "en": "English"}
 TR = {
     "uz": {
         "choose_lang": "Tilni tanlang:", "lang_saved": "Til saqlandi.", "welcome": "Assalomu alaykum! Kerakli bo'limni tanlang.",
-        "get_coin": "Yashil - Tekin coin olish", "account": "Ko'k - Mening hisobim", "withdraw": "Qizil - Coinni yechish", "promo": "Binafsha - Promo kod", "top": "Ko'k - Top referallar", "language": "Sariq - Til almashtirish", "admin_panel": "To'q sariq - Admin panel",
+        "get_coin": "Tekin coin olish", "account": "Mening hisobim", "withdraw": "Coinni yechish", "promo": "Promo kod", "top": "Top referallar", "language": "Til almashtirish", "admin_panel": "Admin panel",
         "ref_link": "Sizning referal linkingiz:\n{link}\n\nHar bir tasdiqlangan do'st uchun {reward} coin beriladi.",
         "account_text": "ID: {id}\nCoin: {coins}\nReferallar: {refs}\nYechilgan: {withdrawn}",
         "withdraw_text": "Qaysi mukofotni yechmoqchisiz?", "not_enough": "Coin yetarli emas. Kerak: {price}, sizda: {coins}", "withdraw_ok": "So'rov qabul qilindi. Admin tez orada ko'rib chiqadi.",
@@ -122,7 +119,7 @@ TR = {
     },
     "ru": {
         "choose_lang": "Выберите язык:", "lang_saved": "Язык сохранен.", "welcome": "Здравствуйте! Выберите раздел.",
-        "get_coin": "Зеленая - Получить монеты", "account": "Синяя - Мой счет", "withdraw": "Красная - Вывести монеты", "promo": "Фиолетовая - Промокод", "top": "Синяя - Топ рефералов", "language": "Желтая - Сменить язык", "admin_panel": "Оранжевая - Админ панель",
+        "get_coin": "Получить монеты", "account": "Мой счет", "withdraw": "Вывести монеты", "promo": "Промокод", "top": "Топ рефералов", "language": "Сменить язык", "admin_panel": "Админ панель",
         "ref_link": "Ваша реферальная ссылка:\n{link}\n\nЗа каждого подтвержденного друга вы получите {reward} монет.",
         "account_text": "ID: {id}\nМонеты: {coins}\nРефералы: {refs}\nВыведено: {withdrawn}",
         "withdraw_text": "Какую награду вывести?", "not_enough": "Недостаточно монет. Нужно: {price}, у вас: {coins}", "withdraw_ok": "Заявка принята. Админ скоро проверит.",
@@ -136,7 +133,7 @@ TR = {
     },
     "en": {
         "choose_lang": "Choose language:", "lang_saved": "Language saved.", "welcome": "Hello! Choose a section.",
-        "get_coin": "Green - Get free coins", "account": "Blue - My account", "withdraw": "Red - Withdraw coins", "promo": "Purple - Promo code", "top": "Blue - Top referrals", "language": "Yellow - Change language", "admin_panel": "Orange - Admin panel",
+        "get_coin": "Get free coins", "account": "My account", "withdraw": "Withdraw coins", "promo": "Promo code", "top": "Top referrals", "language": "Change language", "admin_panel": "Admin panel",
         "ref_link": "Your referral link:\n{link}\n\nYou get {reward} coins for every confirmed friend.",
         "account_text": "ID: {id}\nCoins: {coins}\nReferrals: {refs}\nWithdrawn: {withdrawn}",
         "withdraw_text": "Which reward do you want to withdraw?", "not_enough": "Not enough coins. Need: {price}, you have: {coins}", "withdraw_ok": "Request accepted. Admin will review it soon.",
@@ -199,24 +196,112 @@ def is_admin(user_id: int) -> bool:
     return is_owner(user_id) or admins.find_one({"_id": user_id}) is not None
 
 
+# Telegram Premium custom emoji ID joylari.
+# ID qo'yish namunasi: "get_coin": "5368324170671202286"
+# Bo'sh qoldirilsa oddiy emoji + rangli tugma ishlayveradi.
+PREMIUM_EMOJI_IDS = {
+    "get_coin": "5221962903678103519",       # Asosiy menyu: Tekin coin olish
+    "account": "5846064730308874217",        # Asosiy menyu: Mening hisobim
+    "withdraw": "5271779885747025897",       # Asosiy menyu: Coinni yechish
+    "promo": "6104792847255344056",          # Asosiy menyu: Promo kod
+    "top": "5460750711534926792",            # Asosiy menyu: Top referallar
+    "language": "6003731373427266014",       # Asosiy menyu: Til almashtirish
+    "admin_panel": "5445080884132719243",    # Asosiy menyu: Admin panel
+    "lang_uz": "5449829434334912605",        # Til tanlash: O'zbek tili
+    "lang_ru": "5449408995691341691",        # Til tanlash: Rus tili
+    "lang_en": "5202021044105257611",        # Til tanlash: Ingliz tili
+    "admin_stats": "5438326064512275784",    # Admin panel: Statistika
+    "admin_add_req": "5438491618321665691",  # Admin panel: Majburiy obuna qo'shish
+    "admin_del_req": "5438574962162043987",  # Admin panel: Majburiy obunani o'chirish
+    "admin_list_req": "5440444514181353680", # Admin panel: Obunalar ro'yxati
+    "admin_add_coin": "5438620746513421225", # Admin panel: Foydalanuvchiga coin tashlash
+    "admin_add_promo": "5440420075817439686",# Admin panel: Promo kod qo'shish
+    "admin_list_promo": "5438422001196765482", # Admin panel: Promo kodlar
+    "admin_broadcast": "5332301305002086070",  # Admin panel: Hammaga xabar
+    "admin_add_admin": "5438491618321665691",  # Admin panel: Admin qo'shish
+    "admin_del_admin": "5438574962162043987",  # Admin panel: Admin o'chirish
+    "subscription_link": "5440676438120369351",# Majburiy obuna: kanal/link tugmasi
+    "check_sub": "5438271346628922184",      # Majburiy obuna: Obunani tekshirish
+    "withdraw_item": "5440831018288322678",  # Coin yechishdagi mukofot tugmalari
+    "req_type": "",       # Majburiy obuna turini tanlash
+    "req_delete": "",     # Majburiy obunani ro'yxatdan o'chirish
+    "empty": "",          # Bo'sh ro'yxat tugmasi
+    "top_7": "5460991276948143687",          # Top referallar: 1 haftalik
+    "top_20": "5460991276948143687",         # Top referallar: 20 kunlik
+    "top_365": "5460991276948143687",        # Top referallar: 1 yillik
+    "account_id": "",        # Mening hisobim yozuvi: ID qatori
+    "account_coin": "",      # Mening hisobim yozuvi: Coin qatori
+    "account_refs": "",      # Mening hisobim yozuvi: Referallar qatori
+    "account_withdrawn": "", # Mening hisobim yozuvi: Yechilgan/Withdrawn qatori
+}
+
+
+def premium_icon(name: str) -> str | None:
+    icon_id = PREMIUM_EMOJI_IDS.get(name, "").strip()
+    return icon_id or None
+
+
+def premium_line(emoji_key: str, text: str) -> tuple[str, list[MessageEntity]]:
+    icon_id = premium_icon(emoji_key)
+    if not icon_id:
+        return text, []
+    line = f"⭐ {text}"
+    return line, [MessageEntity(type=MessageEntity.CUSTOM_EMOJI, offset=0, length=1, custom_emoji_id=icon_id)]
+
+
+def account_text_with_entities(lang: str, user_id: int, user: dict[str, Any]) -> tuple[str, list[MessageEntity]]:
+    labels = {
+        "uz": ("ID", "Coin", "Referallar", "Yechilgan"),
+        "ru": ("ID", "Монеты", "Рефералы", "Выведено"),
+        "en": ("ID", "Coins", "Referrals", "Withdrawn"),
+    }.get(lang, ("ID", "Coin", "Referallar", "Yechilgan"))
+    values = [user_id, user.get("coins", 0), user.get("referral_count", 0), user.get("withdrawn_coins", 0)]
+    keys = ["account_id", "account_coin", "account_refs", "account_withdrawn"]
+    lines: list[str] = []
+    entities: list[MessageEntity] = []
+    offset = 0
+    for emoji_key, label, value in zip(keys, labels, values):
+        line, line_entities = premium_line(emoji_key, f"{label}: {value}")
+        for entity in line_entities:
+            entity.offset += offset
+            entities.append(entity)
+        lines.append(line)
+        offset += len(line) + 1
+    return "\n".join(lines), entities
+
+
+def kb(text: str, style: str = "primary", emoji_key: str | None = None) -> KeyboardButton:
+    return KeyboardButton(text, style=style, icon_custom_emoji_id=premium_icon(emoji_key or ""))
+
+
+def ib(text: str, style: str = "primary", emoji_key: str | None = None, **kwargs: Any) -> InlineKeyboardButton:
+    return InlineKeyboardButton(text, style=style, icon_custom_emoji_id=premium_icon(emoji_key or ""), **kwargs)
+
+
 def main_menu(lang: str, admin: bool = False) -> ReplyKeyboardMarkup:
-    rows = [[KeyboardButton(t(lang, "get_coin")), KeyboardButton(t(lang, "account"))], [KeyboardButton(t(lang, "withdraw")), KeyboardButton(t(lang, "promo"))], [KeyboardButton(t(lang, "top")), KeyboardButton(t(lang, "language"))]]
+    rows = [
+        [kb(t(lang, "get_coin"), "success", "get_coin"), kb(t(lang, "account"), "primary", "account")],
+        [kb(t(lang, "withdraw"), "danger", "withdraw"), kb(t(lang, "promo"), "primary", "promo")],
+        [kb(t(lang, "top"), "primary", "top"), kb(t(lang, "language"), "success", "language")],
+    ]
     if admin:
-        rows[-1].append(KeyboardButton(t(lang, "admin_panel")))
+        rows[-1].append(kb(t(lang, "admin_panel"), "danger", "admin_panel"))
     return ReplyKeyboardMarkup(rows, resize_keyboard=True)
 
 
 def lang_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[InlineKeyboardButton(name, callback_data=f"lang:{code}")] for code, name in LANG_NAMES.items()])
+    styles = {"uz": "success", "ru": "primary", "en": "danger"}
+    labels = {"uz": LANG_NAMES["uz"], "ru": LANG_NAMES["ru"], "en": LANG_NAMES["en"]}
+    return InlineKeyboardMarkup([[ib(labels[code], styles[code], f"lang_{code}", callback_data=f"lang:{code}")] for code in LANGS])
 
 
 def admin_keyboard(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton(t(lang, "stats").split("\n", 1)[0], callback_data="admin:stats"), InlineKeyboardButton(t(lang, "add_req"), callback_data="admin:add_req")],
-        [InlineKeyboardButton(t(lang, "remove_req"), callback_data="admin:remove_req"), InlineKeyboardButton(t(lang, "list_req"), callback_data="admin:list_req")],
-        [InlineKeyboardButton(t(lang, "add_coin"), callback_data="admin:add_coin"), InlineKeyboardButton(t(lang, "add_promo"), callback_data="admin:add_promo")],
-        [InlineKeyboardButton(t(lang, "list_promo"), callback_data="admin:list_promo"), InlineKeyboardButton(t(lang, "broadcast"), callback_data="admin:broadcast")],
-        [InlineKeyboardButton(t(lang, "add_admin"), callback_data="admin:add_admin"), InlineKeyboardButton(t(lang, "remove_admin"), callback_data="admin:remove_admin")],
+        [ib(t(lang, "stats").split("\n", 1)[0], "primary", "admin_stats", callback_data="admin:stats"), ib(t(lang, "add_req"), "success", "admin_add_req", callback_data="admin:add_req")],
+        [ib(t(lang, "remove_req"), "danger", "admin_del_req", callback_data="admin:remove_req"), ib(t(lang, "list_req"), "primary", "admin_list_req", callback_data="admin:list_req")],
+        [ib(t(lang, "add_coin"), "success", "admin_add_coin", callback_data="admin:add_coin"), ib(t(lang, "add_promo"), "success", "admin_add_promo", callback_data="admin:add_promo")],
+        [ib(t(lang, "list_promo"), "primary", "admin_list_promo", callback_data="admin:list_promo"), ib(t(lang, "broadcast"), "primary", "admin_broadcast", callback_data="admin:broadcast")],
+        [ib(t(lang, "add_admin"), "success", "admin_add_admin", callback_data="admin:add_admin"), ib(t(lang, "remove_admin"), "danger", "admin_del_admin", callback_data="admin:remove_admin")],
     ])
 
 
@@ -226,31 +311,31 @@ def subscription_keyboard(lang: str, missing: list[dict[str, Any]]) -> InlineKey
         title = req.get("title") or req.get("target") or "Link"
         url = req.get("url") or req.get("target")
         if isinstance(url, str) and url.startswith(("http://", "https://")):
-            rows.append([InlineKeyboardButton(f"{title}", url=url)])
+            rows.append([ib(f"{title}", "primary", "subscription_link", url=url)])
         else:
-            rows.append([InlineKeyboardButton(f"{title}", callback_data="noop")])
-    rows.append([InlineKeyboardButton(t(lang, "check_sub"), callback_data="check_sub")])
+            rows.append([ib(f"{title}", "primary", "subscription_link", callback_data="noop")])
+    rows.append([ib(t(lang, "check_sub"), "success", "check_sub", callback_data="check_sub")])
     return InlineKeyboardMarkup(rows)
 
 
 def withdraw_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[InlineKeyboardButton(f"{label} - {price} coin", callback_data=f"withdraw:{code}")] for code, label, price in WITHDRAW_ITEMS])
+    return InlineKeyboardMarkup([[ib(f"{label} - {price} coin", "primary", "withdraw_item", callback_data=f"withdraw:{code}")] for code, label, price in WITHDRAW_ITEMS])
 
 
 def req_type_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[InlineKeyboardButton(label, callback_data=f"reqtype:{code}")] for code, label in REQ_TYPES])
+    return InlineKeyboardMarkup([[ib(f"{label}", "success", "req_type", callback_data=f"reqtype:{code}")] for code, label in REQ_TYPES])
 
 
 def remove_req_keyboard(lang: str) -> InlineKeyboardMarkup:
-    rows = [[InlineKeyboardButton(f"O'chirish: {doc.get('title', doc.get('target'))}", callback_data=f"reqdel:{doc['_id']}")] for doc in requirements.find({"active": True}).sort("created_at", ASCENDING)]
-    return InlineKeyboardMarkup(rows or [[InlineKeyboardButton(t(lang, "empty"), callback_data="noop")]])
+    rows = [[ib(f"O'chirish: {doc.get('title', doc.get('target'))}", "danger", "req_delete", callback_data=f"reqdel:{doc['_id']}")] for doc in requirements.find({"active": True}).sort("created_at", ASCENDING)]
+    return InlineKeyboardMarkup(rows or [[ib(t(lang, "empty"), "primary", "empty", callback_data="noop")]])
 
 
 def top_keyboard(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton(t(lang, "top_7"), callback_data="top:7")],
-        [InlineKeyboardButton(t(lang, "top_20"), callback_data="top:20")],
-        [InlineKeyboardButton(t(lang, "top_365"), callback_data="top:365")],
+        [ib(t(lang, "top_7"), "success", "top_7", callback_data="top:7")],
+        [ib(t(lang, "top_20"), "primary", "top_20", callback_data="top:20")],
+        [ib(t(lang, "top_365"), "danger", "top_365", callback_data="top:365")],
     ])
 
 
@@ -420,7 +505,8 @@ async def show_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         return
     lang = get_lang(update.effective_user.id)
     user = users.find_one({"_id": update.effective_user.id}) or {}
-    await update.message.reply_text(t(lang, "account_text", id=update.effective_user.id, coins=user.get("coins", 0), refs=user.get("referral_count", 0), withdrawn=user.get("withdrawn_coins", 0)), reply_markup=main_menu(lang, is_admin(update.effective_user.id)))
+    text, entities = account_text_with_entities(lang, update.effective_user.id, user)
+    await update.message.reply_text(text, entities=entities or None, reply_markup=main_menu(lang, is_admin(update.effective_user.id)))
 
 
 async def withdraw_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -796,7 +882,7 @@ async def process_update_json(data: dict[str, Any]) -> None:
     await telegram_app.process_update(update)
 
 
-@app.get("/")
+@flask_app.get("/")
 def health():
     host = request.headers.get("X-Forwarded-Host") or request.host
     scheme = request.headers.get("X-Forwarded-Proto") or "https"
@@ -808,47 +894,26 @@ def health():
     return jsonify({"ok": True, "bot": "running", "webhook": webhook_configured})
 
 
-import asyncio
-
-@app.post("/")
-@app.post("/webhook")
-@app.post(f"/webhook/{WEBHOOK_SECRET}")
+@flask_app.post("/webhook")
+@flask_app.post(f"/webhook/{WEBHOOK_SECRET}")
 def webhook():
-    if not telegram_app:
-        return jsonify({"ok": False, "error": "Bot not initialized"}), 500
-        
-    data = request.get_json(force=True, silent=True)
-    if not data:
-        return jsonify({"ok": True})
-
-    # Telegram Update obyektiga aylantirib, to'g'ridan-to'g'ri app ga uzatamiz
+    ensure_telegram_started()
+    data = request.get_json(force=True, silent=True) or {}
     try:
-        from telegram import Update
-        update = Update.de_json(data, telegram_app.bot)
-        
-        # Asinxron tarzda navbatga qo'shamiz
-        async def process():
-            await telegram_app.update_queue.put(update)
-            
-        # Gunicorn ichida event loop'ni topib ishlatish:
-        try:
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            
-        loop.create_task(process())
+        run_coroutine(process_update_json(data), timeout=25)
+    except FutureTimeoutError:
+        return jsonify({"ok": False, "error": "timeout"}), 504
     except Exception as exc:
-        print(f"Webhook update error: {exc}", file=sys.stderr)
-        
-    return jsonify({"ok": True}), 200
+        print(f"Webhook process error: {exc}", file=sys.stderr)
+        return jsonify({"ok": False}), 500
+    return jsonify({"ok": True})
 
 
 def main() -> None:
     if WEBHOOK_URL:
         ensure_telegram_started()
         configure_webhook_once(WEBHOOK_URL)
-        app.run(host="0.0.0.0", port=PORT)
+        flask_app.run(host="0.0.0.0", port=PORT)
     else:
         print("Bot polling rejimida ishga tushdi.", file=sys.stderr)
         telegram_app.run_polling(allowed_updates=Update.ALL_TYPES)
