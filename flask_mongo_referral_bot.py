@@ -62,7 +62,7 @@ def masked(value: str) -> str:
 
 
 load_env_file()
-BOT_TOKEN = first_valid_env("BOT_TOKEN", "8831278254:AAHdL4in2whlp76ZOGkw0tNimW5XeCQQOyc", "TOKEN")
+BOT_TOKEN = first_valid_env("BOT_TOKEN", "8831278254:AAGKA8Of31idOVRUnmNHXDx6ebFACerB_Gk", "TOKEN")
 OWNER_ID = int(clean_env("OWNER_ID", "6968399046") or "6968399046")
 ADMIN_IDS_TEXT = clean_env("ADMIN_IDS", str(OWNER_ID))
 MONGO_URI = first_valid_env("MONGODB_URI", "MONGO_URI", default="mongodb+srv://tojiyevjavohir67_db_user:javohir2011@cluster0.pysrg0q.mongodb.net/?appName=Cluster0")
